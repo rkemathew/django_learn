@@ -15,10 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from django.contrib.auth.views import login
 from bookmarks.views import *
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', main_page),
     url(r'^user/(\w+)/$', user_page),
+    url(r'^login/$', login),
+    url(r'^logout/$', logout_page)
 ]

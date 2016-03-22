@@ -1,20 +1,13 @@
 from django.shortcuts import render
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template import Context
 from django.template.loader import get_template
+from django.contrib.auth import logout
 from django.contrib.auth.models import User
 
 # Create your views here.
 def main_page(request):
-    template = get_template('main_page.html')
-    variables = Context ({
-        'head_title': 'Django Bookmarks',
-        'page_title': 'Welcome to Django Bookmarks',
-        'page_body': 'Where you can store and share bookmarks!'
-    })
-    output = template.render(variables)
-
-    return HttpResponse(output)
+    return render(request, "main_page.html", { "user": request.user })
 
 def user_page(request, username):
     try:
@@ -23,10 +16,11 @@ def user_page(request, username):
         raise Http404('Requested user not found.')
 
     bookmarks = user.bookmark_set.all()
-    template = get_template('user_page.html')
-    variables = Context({
-        'username': username,
-        'bookmarks': bookmarks
+    return render(request, "user_page.html", {
+        "username": username,
+        "bookmarks": bookmarks
     })
-    output = template.render(variables)
-    return HttpResponse(output)
+
+def logout_page(request):
+    logout(request)
+    return HttpResponseRedirect("/")
